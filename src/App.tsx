@@ -1,6 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { useUser } from '@supabase/auth-helpers-react';
 import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import JobRequirements from './pages/JobRequirements';
@@ -8,13 +9,23 @@ import CandidateList from './pages/CandidateList';
 import CompareResumes from './pages/CompareResumes';
 import ResumeDetail from './pages/ResumeDetail';
 import Settings from './pages/Settings';
+import Auth from './components/Auth';
 
 function App() {
+  const user = useUser();
+
   return (
     <Router>
       <Toaster position="top-right" />
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route 
+          path="/login" 
+          element={user ? <Navigate to="/" replace /> : <Auth />} 
+        />
+        <Route 
+          path="/" 
+          element={user ? <Layout /> : <Navigate to="/login" replace />}
+        >
           <Route index element={<Dashboard />} />
           <Route path="job-requirements" element={<JobRequirements />} />
           <Route path="candidates" element={<CandidateList />} />
