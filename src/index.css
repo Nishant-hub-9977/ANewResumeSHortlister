@@ -4,12 +4,11 @@
 
 @layer base {
   html {
-    @apply text-gray-900;
+    @apply text-gray-900 antialiased;
   }
   
   body {
-    @apply bg-gray-50;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    @apply bg-gray-50 font-sans;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -17,53 +16,65 @@
   }
   
   h1 {
-    @apply text-3xl sm:text-4xl;
+    @apply text-3xl sm:text-4xl font-bold;
   }
   
   h2 {
-    @apply text-2xl sm:text-3xl;
+    @apply text-2xl sm:text-3xl font-semibold;
   }
   
   h3 {
-    @apply text-xl sm:text-2xl;
+    @apply text-xl sm:text-2xl font-semibold;
   }
 
   h4 {
-    @apply text-lg sm:text-xl;
+    @apply text-lg sm:text-xl font-medium;
+  }
+
+  /* Focus styles for better accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-white;
   }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
   
   .btn-primary {
-    @apply bg-blue-600 text-white hover:bg-blue-700 focus-visible:ring-blue-500;
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus-visible:ring-primary-500 
+           active:bg-primary-800 disabled:bg-primary-300;
   }
   
   .btn-secondary {
-    @apply bg-white text-gray-900 border border-gray-200 hover:bg-gray-100 focus-visible:ring-gray-500;
+    @apply bg-white text-gray-900 border border-gray-200 hover:bg-gray-100 
+           focus-visible:ring-gray-500 active:bg-gray-200;
   }
   
   .btn-accent {
-    @apply bg-purple-600 text-white hover:bg-purple-700 focus-visible:ring-purple-500;
+    @apply bg-purple-600 text-white hover:bg-purple-700 focus-visible:ring-purple-500 
+           active:bg-purple-800;
   }
   
   .card {
-    @apply rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md;
+    @apply rounded-lg border border-gray-200 bg-white shadow-sm transition-all duration-200 
+           hover:shadow-md focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2;
   }
   
   .input {
-    @apply flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50;
+    @apply flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm 
+           placeholder:text-gray-400 hover:border-gray-400 focus:border-primary-500 
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 
+           disabled:cursor-not-allowed disabled:opacity-50;
   }
   
   .badge {
-    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors;
   }
   
   .badge-primary {
-    @apply bg-blue-100 text-blue-800;
+    @apply bg-primary-100 text-primary-800;
   }
   
   .badge-secondary {
@@ -81,6 +92,11 @@
   .badge-error {
     @apply bg-red-100 text-red-800;
   }
+
+  /* Guest mode banner */
+  .guest-banner {
+    @apply bg-primary-50 border-b border-primary-100 px-4 py-2 text-sm text-primary-800;
+  }
 }
 
 /* Animations */
@@ -90,8 +106,19 @@
 }
 
 @keyframes slideUp {
-  from { transform: translateY(10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from { 
+    transform: translateY(10px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
 }
 
 .animate-fade-in {
@@ -102,32 +129,36 @@
   animation: slideUp 0.4s ease-out;
 }
 
+.animate-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+}
+
 /* Resume card hover effect */
 .resume-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  @apply transition-all duration-200;
 }
 
 .resume-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  @apply transform -translate-y-1 shadow-lg;
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  @apply w-2 h-2;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
+  @apply bg-gray-100 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
+  @apply bg-gray-300 rounded-full hover:bg-gray-400 transition-colors;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+/* Loading spinner */
+.loading-spinner {
+  @apply animate-spin rounded-full border-2 border-gray-200;
+  border-top-color: theme('colors.primary.600');
 }

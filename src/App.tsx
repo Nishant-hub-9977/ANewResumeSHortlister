@@ -10,21 +10,30 @@ import CompareResumes from './pages/CompareResumes';
 import ResumeDetail from './pages/ResumeDetail';
 import Settings from './pages/Settings';
 import Auth from './components/Auth';
+import GuestBanner from './components/GuestBanner';
 
 function App() {
   const user = useUser();
+  const isGuest = user?.email?.startsWith('guest_');
 
   return (
     <Router>
-      <Toaster position="top-right" />
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 4000,
+          className: 'animate-slide-up',
+        }}
+      />
+      {isGuest && <GuestBanner />}
       <Routes>
         <Route 
           path="/login" 
-          element={user ? <Navigate to="/\" replace /> : <Auth />} 
+          element={user ? <Navigate to="/" replace /> : <Auth />} 
         />
         <Route 
           path="/" 
-          element={user ? <Layout /> : <Navigate to="/login\" replace />}
+          element={user ? <Layout /> : <Navigate to="/login" replace />}
         >
           <Route index element={<Dashboard />} />
           <Route path="job-requirements" element={<JobRequirements />} />
