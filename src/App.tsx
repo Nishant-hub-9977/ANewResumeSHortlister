@@ -29,11 +29,11 @@ function App() {
       <Routes>
         <Route 
           path="/login" 
-          element={user ? <Navigate to="/" replace /> : <Auth />} 
+          element={user ? <Navigate to="/\" replace /> : <Auth />} 
         />
         <Route 
           path="/" 
-          element={user ? <Layout /> : <Navigate to="/login" replace />}
+          element={user ? <Layout /> : <Navigate to="/login\" replace />}
         >
           <Route index element={<Dashboard />} />
           <Route path="job-requirements" element={<JobRequirements />} />
