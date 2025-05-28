@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Save } from 'lucide-react';
+import { Save, AlertCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Settings: React.FC = () => {
   const [settings, setSettings] = useState({
@@ -9,6 +10,9 @@ const Settings: React.FC = () => {
     aiSensitivity: 70,
     defaultJobRequirement: '',
     theme: 'light',
+    boltApiKey: '',
+    boltDeviceId: '',
+    googleAnalyticsViewId: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -29,10 +33,7 @@ const Settings: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Save settings to backend
-    console.log('Saving settings:', settings);
-    // Show success message
-    alert('Settings saved successfully!');
+    toast.success('Settings saved successfully!');
   };
 
   return (
@@ -40,7 +41,7 @@ const Settings: React.FC = () => {
       <div className="mb-8">
         <h1 className="text-3xl font-semibold text-gray-900">Settings</h1>
         <p className="mt-2 text-gray-600">
-          Configure your resume shortlisting preferences and notifications
+          Configure your resume shortlisting preferences and integrations
         </p>
       </div>
       
@@ -49,6 +50,69 @@ const Settings: React.FC = () => {
           <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-6">
             <div className="sm:col-span-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Integrations
+              </h2>
+            </div>
+
+            <div className="sm:col-span-6">
+              <div className="bg-primary-50 border border-primary-100 rounded-lg p-4 mb-6">
+                <div className="flex items-start">
+                  <AlertCircle className="h-5 w-5 text-primary-500 mt-0.5 mr-3 flex-shrink-0" />
+                  <p className="text-sm text-primary-800">
+                    Configure your integrations to enable additional features and analytics.
+                    Make sure to keep your API keys secure and never share them with others.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="sm:col-span-3">
+              <label htmlFor="boltApiKey" className="block text-sm font-medium text-gray-700">
+                Bolt API Key
+              </label>
+              <input
+                type="password"
+                name="boltApiKey"
+                id="boltApiKey"
+                value={settings.boltApiKey}
+                onChange={handleInputChange}
+                className="mt-1 input"
+                placeholder="Enter your Bolt API key"
+              />
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="boltDeviceId" className="block text-sm font-medium text-gray-700">
+                Bolt Device ID
+              </label>
+              <input
+                type="text"
+                name="boltDeviceId"
+                id="boltDeviceId"
+                value={settings.boltDeviceId}
+                onChange={handleInputChange}
+                className="mt-1 input"
+                placeholder="Enter your Bolt device ID"
+              />
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="googleAnalyticsViewId" className="block text-sm font-medium text-gray-700">
+                Google Analytics View ID
+              </label>
+              <input
+                type="text"
+                name="googleAnalyticsViewId"
+                id="googleAnalyticsViewId"
+                value={settings.googleAnalyticsViewId}
+                onChange={handleInputChange}
+                className="mt-1 input"
+                placeholder="Enter your Google Analytics view ID"
+              />
+            </div>
+
+            <div className="sm:col-span-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 pt-4 border-t border-gray-200">
                 General Settings
               </h2>
             </div>
@@ -103,7 +167,7 @@ const Settings: React.FC = () => {
                   type="checkbox"
                   checked={settings.autoAnalyzeResumes}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-blue-600 rounded"
+                  className="h-4 w-4 text-primary-600 rounded"
                 />
                 <label htmlFor="autoAnalyzeResumes" className="ml-2 text-sm text-gray-700">
                   Automatically analyze resumes upon upload
@@ -152,7 +216,7 @@ const Settings: React.FC = () => {
                   type="checkbox"
                   checked={settings.notifyOnNewResumes}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-blue-600 rounded"
+                  className="h-4 w-4 text-primary-600 rounded"
                 />
                 <label htmlFor="notifyOnNewResumes" className="ml-2 text-sm text-gray-700">
                   Notify me when new resumes are uploaded
