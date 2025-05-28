@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Upload, X, File, Loader2 } from 'lucide-react';
+import { Upload, X, File, Loader2, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface ResumeUploaderProps {
@@ -16,18 +16,38 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({
 }) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const validateFile = (file: File) => {
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      return 'Invalid file type. Only PDF and Word documents are accepted.';
+    }
+
+    if (file.size > maxSize) {
+      return 'File is too large. Maximum size is 5MB.';
+    }
+
+    return null;
+  };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    // Check file types
-    const validFiles = acceptedFiles.filter(file => 
-      file.type === 'application/pdf' || 
-      file.type === 'application/msword' || 
-      file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    );
+    setError(null);
     
-    if (validFiles.length !== acceptedFiles.length) {
-      toast.error('Some files were rejected. Only PDF and Word documents are accepted.');
-    }
+    const validFiles = acceptedFiles.filter(file => {
+      const error = validateFile(file);
+      if (error) {
+        toast.error(error);
+        return false;
+      }
+      return true;
+    });
     
     if (validFiles.length > 0) {
       const newFiles = [...files, ...validFiles];
@@ -49,17 +69,20 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({
       'application/pdf': ['.pdf'],
       'application/msword': ['.doc'],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
-    }
+    },
+    maxSize: 5 * 1024 * 1024 // 5MB
   });
   
   const removeFile = (index: number) => {
     const newFiles = [...files];
     newFiles.splice(index, 1);
     setFiles(newFiles);
+    setError(null);
   };
   
   const handleUpload = async (filesToUpload: File[]) => {
     setIsUploading(true);
+    setError(null);
     
     try {
       // Simulate upload delay for demo
@@ -72,8 +95,9 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({
         setFiles([]);
       }
     } catch (error) {
-      toast.error('Failed to upload resumes. Please try again.');
-      console.error('Upload error:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload resumes';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsUploading(false);
     }
@@ -86,15 +110,26 @@ const ResumeUploader: React.FC<ResumeUploaderProps> = ({
         className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
           isDragActive 
             ? 'border-blue-500 bg-blue-50' 
-            : 'border-gray-300 hover:bg-gray-50'
+            : error 
+              ? 'border-red-300 bg-red-50'
+              : 'border-gray-300 hover:bg-gray-50'
         }`}
       >
         <input {...getInputProps()} />
         <div className="flex flex-col items-center justify-center space-y-2">
-          <Upload className="h-10 w-10 text-blue-500" />
-          <p className="text-lg font-medium">
-            {isDragActive ? 'Drop the files here' : 'Drag & drop resume files here'}
-          </p>
+          {error ? (
+            <>
+              <AlertCircle className="h-10 w-10 text-red-500" />
+              <p className="text-lg font-medium text-red-600">{error}</p>
+            </>
+          ) : (
+            <>
+              <Upload className="h-10 w-10 text-blue-500" />
+              <p className="text-lg font-medium">
+                {isDragActive ? 'Drop the files here' : 'Drag & drop resume files here'}
+              </p>
+            </>
+          )}
           <p className="text-sm text-gray-500">or click to browse files</p>
           <p className="text-xs text-gray-400">
             Supports PDF, DOC, DOCX (Max size: 5MB)

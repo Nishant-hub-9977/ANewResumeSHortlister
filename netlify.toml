@@ -1,0 +1,29 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+  [plugins.inputs]
+    output_path = "lighthouse-report.html"
+    fail_deploy_on_score = false
+
+    [plugins.inputs.thresholds]
+      performance = 0.7
+      accessibility = 0.9
+      best-practices = 0.8
+      seo = 0.9
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@supabase/supabase-js"]
+
+[build.environment]
+  NODE_VERSION = "20"
