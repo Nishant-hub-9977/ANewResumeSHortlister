@@ -61,7 +61,7 @@ const Auth: React.FC = () => {
               supabaseClient={supabase}
               appearance={{ theme: ThemeSupa }}
               providers={['google']}
-              redirectTo={`${window.location.origin}/dashboard`}
+              redirectTo="https://gleaming-babka-c99335.netlify.app/dashboard"
             />
           </div>
         </div>
