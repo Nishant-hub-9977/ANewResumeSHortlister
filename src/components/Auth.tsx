@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
+import { supabase, getStoredGuestSession, storeGuestSession } from '../lib/supabase';
 import { LogIn, Mail, Lock, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -10,6 +10,14 @@ const Auth: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    // Check for existing guest session
+    const guestSession = getStoredGuestSession();
+    if (guestSession) {
+      handleGuestSignIn(guestSession.email, guestSession.password);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +30,7 @@ const Auth: React.FC = () => {
 
       if (error) throw error;
       if (data.user) {
-        navigate('/', { replace: true });
+        navigate('/');
         toast.success(isSignUp ? 'Account created successfully!' : 'Welcome back!');
       }
     } catch (error) {
@@ -33,18 +41,36 @@ const Auth: React.FC = () => {
     }
   };
 
-  const handleGuestAccess = async () => {
+  const handleGuestSignIn = async (guestEmail?: string, guestPassword?: string) => {
     setIsLoading(true);
     try {
-      const guestEmail = `guest_${Date.now()}@example.com`;
+      const email = guestEmail || `guest_${Date.now()}@example.com`;
+      const password = guestPassword || `guest_${Date.now()}!`;
+
+      // Try to sign in first if credentials are provided
+      if (guestEmail && guestPassword) {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: guestEmail,
+          password: guestPassword
+        });
+
+        if (!error && data.user) {
+          navigate('/');
+          toast.success('Welcome back!');
+          return;
+        }
+      }
+
+      // Create new guest account if sign in failed or no credentials provided
       const { data, error } = await supabase.auth.signUp({
-        email: guestEmail,
-        password: 'guest123!',
+        email,
+        password,
       });
 
       if (error) throw error;
       if (data.user) {
-        navigate('/', { replace: true });
+        storeGuestSession(email, password);
+        navigate('/');
         toast.success('Welcome! You are using the app as a guest.');
       }
     } catch (error) {
@@ -68,11 +94,11 @@ const Auth: React.FC = () => {
         </div>
 
         <button
-          onClick={handleGuestAccess}
+          onClick={() => handleGuestSignIn()}
           disabled={isLoading}
-          className="w-full btn btn-secondary mb-6 group"
+          className="w-full btn btn-secondary group"
         >
-          <LogIn className="mr-2 h-5 w-5 text-gray-500 group-hover:text-gray-700" />
+          <LogIn className="mr-2 h-5 w-5 text-gray-500 group-hover:text-gray-700 transition-colors" />
           Continue as Guest
         </button>
 

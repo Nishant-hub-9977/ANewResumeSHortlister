@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const GuestBanner: React.FC = () => {
   return (
     <div className="guest-banner">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
           <AlertCircle className="h-4 w-4 mr-2" />
           <span>You're using the app as a guest. Some features may be limited.</span>
