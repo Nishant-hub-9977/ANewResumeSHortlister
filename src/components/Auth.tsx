@@ -22,7 +22,7 @@ const Auth: React.FC = () => {
 
       if (error) throw error;
       if (data.user) {
-        navigate('/');
+        navigate('/', { replace: true });
         toast.success(isSignUp ? 'Account created successfully!' : 'Welcome back!');
       }
     } catch (error) {
@@ -44,7 +44,7 @@ const Auth: React.FC = () => {
 
       if (error) throw error;
       if (data.user) {
-        navigate('/');
+        navigate('/', { replace: true });
         toast.success('Welcome! You are using the app as a guest.');
       }
     } catch (error) {
