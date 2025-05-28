@@ -1,5 +1,5 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "resume-shortlister",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,16 +8,10 @@
     "build": "vite build",
     "start": "serve dist -l 3000",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "lighthouse": "lighthouse --output=html --output-path=./lighthouse-report.html --view",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "test": "cypress run"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@supabase/auth-helpers-react": "^0.4.2",
-    "@supabase/auth-ui-react": "^0.4.7",
-    "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.39.3",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
@@ -29,17 +23,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
-    "@netlify/plugin-lighthouse": "^5.0.0",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.18",
-    "cypress": "^13.6.6",
     "eslint": "^9.9.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
-    "lighthouse": "^11.6.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
